@@ -1,0 +1,9 @@
+# depslib dependency file v1.0
+1574805353 source:c:\users\dragos\desktop\p22 poo\main.cpp
+	<iostream>
+	<string.h>
+	<fstream>
+	<stdlib.h>
+	<typeinfo>
+	<math.h>
+

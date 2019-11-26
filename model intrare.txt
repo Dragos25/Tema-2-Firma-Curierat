@@ -1,0 +1,34 @@
+pt colete:
+
+masa
+volum 
+cald/rece 
+x_initial 
+y_initial 
+x_destinatie 
+y_destinatie 
+t_ridicare 
+t_maxim
+
+pt vehicule:
+
+tip (scuter masina duba)
+masa
+volum
+x_initial
+y_initial
+1/0 (pt dube, daca poate transporta obiecte reci)
+
+
+101 5 cald 20 30 40 50 500 1000
+20 30 rece 11 54 55 59 155 800
+40 50 cald 23 1 43 12 203 1250
+55 55 rece 17 1 23 4 100  700
+25 30 cald 25 30 50 50 240 890
+
+
+scuter 100 200 10 20
+scuter 120 230 50 60
+masina 400 12300 100 20
+duba 1000 1000 150 400 1
+
