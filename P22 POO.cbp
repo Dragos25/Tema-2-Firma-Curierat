@@ -32,11 +32,9 @@
 			<Add option="-Wall" />
 			<Add option="-fexceptions" />
 		</Compiler>
-		<Unit filename="colet.h" />
 		<Unit filename="in_colete" />
 		<Unit filename="in_vehicule" />
 		<Unit filename="main.cpp" />
-		<Unit filename="vehicul.h" />
 		<Extensions>
 			<code_completion />
 			<envvars />

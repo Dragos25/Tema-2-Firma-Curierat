@@ -165,6 +165,58 @@ public:
         return t;
     }
 
+    void livrez_colete()
+    {
+        for(int i=0;i<=nr_c;i++){
+            int dist_colet=c[i].getdist();
+            if(deplasare_timp(c->lx,c->ly)+dist_colet/(viteza*0.27)<=timp_curent)
+            {
+                cout<<"Un colet a fost livrat!"<<endl;
+                for(int j=i;j<nr_c;j++)
+                    c[j]=c[j+1];
+                nr_c--;
+            }
+
+
+        }
+    }
+
+    void sortez_colete_urgenta()
+    {
+        for(int i=0;i<nr_c;i++)
+            for(int j=i;j<=nr_c;j++)
+                if(c[i].tl>c[j].tl)
+        {
+            colet aux=c[i];
+            c[i]=c[j];
+            c[j]=aux;
+        }
+    }
+
+    void sortez_colete_apropiat()
+    {
+        for(int i=0;i<nr_c;i++)
+            for(int j=i;j<=nr_c;j++)
+                if(deplasare_distanta(c[i].dx,c[i].dy) > deplasare_distanta(c[j].dx,c[i].dy) )
+        {
+            colet aux=c[i];
+            c[i]=c[j];
+            c[j]=aux;
+        }
+    }
+
+    void sortez_colete_ordine()
+    {
+        for(int i=0;i<nr_c;i++)
+            for(int j=i;j<=nr_c;j++)
+                if( c[i].tr > c[j].tr)
+        {
+            colet aux=c[i];
+            c[i]=c[j];
+            c[j]=aux;
+        }
+
+    }
     int getvolumg(){return volumocupat;}
     int getmasag(){return masaocupata;}
     int getvolum(){return volum;}
@@ -405,6 +457,91 @@ void distribui_colet_repede(vehicul*v[], int nr_v, colet c)
     v[cont]->adaug_colet(c);
 }
 
+void manager(colet c[],int nr_c, vehicul *v[], int nr_v)
+{
+    int i;
+    for(int i=0;i<nr_c;i++)
+    {
+        for(int j=0;j<nr_v;j++)
+            v[j]->livrez_colete();
+        cout<<c[i]<<endl;
+        cout<<"Cum doriti sa alocati coletul? "<<endl;
+        cout<<"1 - Catre cel mai apropiat vehicul "<<endl;
+        cout<<"2 - Catre vehicului cel mai putin incarcat "<<endl;
+        cout<<"3 - Cea mai rapida livrare "<<endl;
+        int dec;
+
+        while(1)
+        {
+            while(1)
+            {
+                cin>>dec;
+                if(dec==1 || dec==2 || dec==3) break;
+            }
+
+            switch (dec)
+            {
+                case 1: distribui_colet_apropiat(v,nr_v,c[i]);break;
+                case 2: distribui_colet_incarcat(v,nr_v,c[i]);break;
+                case 3: distribui_colet_repede(v,nr_v,c[i]);break;
+
+            }
+
+             if(dec==1 || dec==2 || dec==3) break;
+        }
+        timp_curent = c[i].get_timpr();
+        cout<<"Doriti sa schimbati strategia de livrare? da/nu";
+        string aleg;
+        cin>>aleg;
+        if(aleg=="DA" || aleg=="da")
+        {
+            while(1)
+            {
+                int indice;
+                cout<<"Pentru ce vehicul doriti sa schimbati strategia? n<"<<nr_v<<endl;
+                do
+                {
+                    cin>>indice;
+                }while(indice<0 || indice>=nr_v+1);
+                cout<<"Vehiculul are coletele: "<<endl;
+                v[i]->afisez_colete();
+                cout<<"Ce strategie doriti sa aplicati?"<<endl;
+                cout<<"1 - Cel mai urgent primul"<<endl;
+                cout<<"2 - Coletul cel mai apropiat de poz curenta"<<endl;
+                cout<<"3 - First come first served"<<endl;
+                int str;
+                do
+                {
+                    cin>>str;
+                }while(str<1 || str>3);
+                switch(str)
+                {
+                    case 1: v[i]->sortez_colete_urgenta();break;
+                    case 2: v[i]->sortez_colete_apropiat();break;
+                    case 3: v[i]->sortez_colete_ordine();break;
+                }
+                string aleg;
+                cout<<endl<<"Doriti sa mai faceti si alte modificari? da/nu";
+                cin>>aleg;
+                if(aleg!="DA" && aleg!="da") break;
+
+            }
+        }
+        cout<<endl<<"VEHICULE:"<<endl;
+        for(int i=0;i<nr_v;i++){
+                timp_curent+=v[i]->timp_liv_colete();
+                v[i]->livrez_colete();
+            }
+
+
+    }
+
+    cout<<"VEHICULE:"<<endl;
+    for(int i=0;i<nr_v;i++){
+        cout<<"Vehiculul "<<i<<" :"<<endl;
+        v[i]->afisez_colete();}
+}
+
 
 
 void generare_intrare()
@@ -451,7 +588,7 @@ void generare_intrare()
 
         catch(int x)
         {
-            cout<<"Datele despre un colet sunt invalide\n";
+            cout<<"Datele despre un colet sunt nevalide\n";
         }
         cout<<endl<<"Doriti sa mai cititi si alte colete?\n DA  NU";
         cin>>text;
@@ -495,7 +632,7 @@ void generare_intrare()
         }
         catch(int x)
         {
-            cout<<"Datele despre vehicul sunt invalide!"<<endl;
+            cout<<"Datele despre vehicul sunt nevalide!"<<endl;
         }
         string text;
         cout<<"Mai doriti sa cititi si alte vehicule? DA/NU";
@@ -523,11 +660,7 @@ int main()
     vehicul *v[100];
 
 
-    cout<<endl<<endl;
-    for(int i=0;i<nr_c;i++)
-        cout<<c[i]<<endl;
 
-    cout<<endl<<endl;
     while(!veh.eof())
     {
         string tip;
@@ -552,12 +685,12 @@ int main()
 
         }
     }
-    for(int i=0;i<nr_c;i++)
-        distribui_colet_repede(v,nr_v,c[i]);
+
+    manager(c,nr_c,v,nr_v);
 
 
-    for(int i=0;i<nr_v;i++)
-    {cout<<"Colete pt "<<i<<":"<<endl; v[i]->afisez_colete();cout<<endl;}
+
+
 
     for(int i=0;i<nr_v;i++)
         delete v[i];
