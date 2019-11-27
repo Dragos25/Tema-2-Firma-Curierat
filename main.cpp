@@ -78,7 +78,19 @@ public:
     int getdist(){return sqrt((lx-dx)*(lx-dx)+(ly-dy)*(ly-dy)); }
 
 
+    ~colet()
+    {
+        masa=0;
+        volum=0;
+        lx=0;
+        ly=0;
+        dx=0;
+        dy=0;
+        tr=0;
+        tl=0;
+        rece=0;
 
+    }
 friend class vehicul;
 friend class scuter;
 friend class masina;
@@ -266,6 +278,11 @@ public:
     int getX(){return px;}
     int getY(){return py;}
     int getviteza(){return viteza;}
+
+    virtual ~vehicul()
+    {
+
+    }
 };
 
 
@@ -308,7 +325,10 @@ class scuter:public vehicul
         return dist;
     }
 
+    ~scuter()
+    {
 
+    }
 };
 
 class masina:public vehicul
@@ -344,7 +364,10 @@ class masina:public vehicul
         return dist;
     }
 
+    ~masina()
+    {
 
+    }
 };
 
 class duba:public vehicul
@@ -417,12 +440,11 @@ private:
         rece=v.rece;
         return *this;
     }
+
+    ~duba()
+    {
+    }
 };
-
-
-
-
-
 
 int cmp(void* arg1, void* arg2)         ///sortare colete dupa timpul de livrare final
 {
