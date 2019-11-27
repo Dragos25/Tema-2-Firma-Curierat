@@ -19,12 +19,14 @@ x_initial
 y_initial
 1/0 (pt dube, daca poate transporta obiecte reci)
 
-
-101 5 cald 20 30 40 50 500 1000
+101 5 cald 20 30 400 500 500 700
 20 30 rece 11 54 55 59 155 800
 40 50 cald 23 1 43 12 203 1250
-55 55 rece 17 1 23 4 100  700
-25 30 cald 25 30 50 50 240 890
+55 55 rece 17 1 23 4 100 700
+200 300 cald 10 20 200 300 250 600
+50 50 cald 200 200 20 20 50 400
+
+
 
 
 scuter 100 200 10 20

@@ -1,12 +1,12 @@
+///PROBLEMA 22
+///FIRMA DE CURIERAT
+
 #include <iostream>
 #include <string.h>
 #include <fstream>
 #include <stdlib.h>
 #include <typeinfo>
 #include <math.h>
-
-
-
 
 using namespace std;
 
@@ -52,6 +52,20 @@ public:
     return out;
     }
 
+    colet operator =(const colet &c)
+    {
+        masa=c.masa;
+        volum=c.volum;
+        rece=c.rece;
+        lx=c.lx;
+        ly=c.ly;
+        dx=c.dx;
+        dy=c.dy;
+        tr=c.tr;
+        tl=c.tl;
+        return *this;
+    }
+
     int getmasa(){return masa;}
     int getvolum(){return volum;}
     int getlx(){return lx;}
@@ -75,8 +89,9 @@ friend class duba;
 
 class vehicul
 {
-    public: std::string nume;
+
 protected:
+    string nume;
 
     int viteza;
     int masa;
@@ -127,6 +142,21 @@ public:
         return out;
     }
 
+    vehicul operator =(const vehicul &v)
+    {
+        nume=v.nume;
+        masa=v.masa;
+        masaocupata=v.masaocupata;
+        volum=v.volum;
+        volumocupat=v.volumocupat;
+        px=v.px;
+        py=v.py;
+        nr_c=v.nr_c;
+        for(int i=0;i<=nr_c;i++)
+            c[i]=v.c[i];
+        return *this;
+    }
+
     virtual void afisare()
     {
         cout<<this;
@@ -134,7 +164,11 @@ public:
 
     virtual int deplasare_timp(int x, int y){}
     virtual int deplasare_distanta(int x, int y){}
-
+    void actualizez_locatie(int x, int y)
+    {
+        px=x;
+        py=y;
+    }
     int incape(colet x)
     {
       if(x.masa+masaocupata>masa || x.volum+volumocupat>volum) return -1;
@@ -172,6 +206,8 @@ public:
             if(deplasare_timp(c->lx,c->ly)+dist_colet/(viteza*0.27)<=timp_curent)
             {
                 cout<<"Un colet a fost livrat!"<<endl;
+                cout<<c[i]<<endl;
+                actualizez_locatie(c[i].dx, c[i].dy);
                 for(int j=i;j<nr_c;j++)
                     c[j]=c[j+1];
                 nr_c--;
@@ -183,6 +219,10 @@ public:
 
     void sortez_colete_urgenta()
     {
+        if(nr_c==-1)
+        {
+            return;
+        }
         for(int i=0;i<nr_c;i++)
             for(int j=i;j<=nr_c;j++)
                 if(c[i].tl>c[j].tl)
@@ -195,6 +235,7 @@ public:
 
     void sortez_colete_apropiat()
     {
+        if(nr_c==-1) return;
         for(int i=0;i<nr_c;i++)
             for(int j=i;j<=nr_c;j++)
                 if(deplasare_distanta(c[i].dx,c[i].dy) > deplasare_distanta(c[j].dx,c[i].dy) )
@@ -207,6 +248,7 @@ public:
 
     void sortez_colete_ordine()
     {
+        if(nr_c==-1) return;
         for(int i=0;i<nr_c;i++)
             for(int j=i;j<=nr_c;j++)
                 if( c[i].tr > c[j].tr)
@@ -244,6 +286,8 @@ class scuter:public vehicul
 
 
     }
+
+
 
     void afisare()
     {
@@ -342,7 +386,7 @@ private:
         cout<<*this;
 
     }
-    int deplasare_timp(int x, int y)
+    int deplasare_timp(int x, int y)            ///calcul timp pentru deplasarea vehiculului pana la destinatie
     {
 
         float vms=viteza*0.27;
@@ -350,12 +394,28 @@ private:
         int timp=dist/vms;
         return timp;
     }
-    int deplasare_distanta(int x, int y)
+    int deplasare_distanta(int x, int y)        ///calcul distanta de la vehicul la o locatie
     {
 
         float vms=viteza*0.27;
         float dist=abs(px-x)+abs(py-y);
         return dist;
+    }
+
+    duba operator =(const duba &v)
+    {
+        nume=v.nume;
+        masa=v.masa;
+        masaocupata=v.masaocupata;
+        volum=v.volum;
+        volumocupat=v.volumocupat;
+        px=v.px;
+        py=v.py;
+        nr_c=v.nr_c;
+        for(int i=0;i<=nr_c;i++)
+            c[i]=v.c[i];
+        rece=v.rece;
+        return *this;
     }
 };
 
@@ -371,7 +431,7 @@ int cmp(void* arg1, void* arg2)         ///sortare colete dupa timpul de livrare
     return a->get_timpr()-b->get_timpr();
 }
 
-void distribui_colet_apropiat(vehicul*v[], int nr_v, colet c)
+void distribui_colet_apropiat(vehicul*v[], int nr_v, colet c)           ///distribuire colet catre cel mai apropiat vehicul
 {
 
 
@@ -404,7 +464,7 @@ void distribui_colet_apropiat(vehicul*v[], int nr_v, colet c)
 
 }
 
-void distribui_colet_incarcat(vehicul*v[], int nr_v, colet c)
+void distribui_colet_incarcat(vehicul*v[], int nr_v, colet c)       ///distribuire colet catre cel mai putin incarcat vehicul
 {
     int masamin=99999;
     int cont=-1;
@@ -432,7 +492,7 @@ void distribui_colet_incarcat(vehicul*v[], int nr_v, colet c)
 
     }
 
-void distribui_colet_repede(vehicul*v[], int nr_v, colet c)
+void distribui_colet_repede(vehicul*v[], int nr_v, colet c)     ///distribuire colet dupa cat de repede ajunge la destinatie
 {
     int timp=99999;
     int cont=-1;
@@ -503,8 +563,8 @@ void manager(colet c[],int nr_c, vehicul *v[], int nr_v)
                 {
                     cin>>indice;
                 }while(indice<0 || indice>=nr_v+1);
-                cout<<"Vehiculul are coletele: "<<endl;
-                v[i]->afisez_colete();
+                cout<<"Vehiculul "<<indice<<" are coletele: "<<endl;
+                v[indice]->afisez_colete();
                 cout<<"Ce strategie doriti sa aplicati?"<<endl;
                 cout<<"1 - Cel mai urgent primul"<<endl;
                 cout<<"2 - Coletul cel mai apropiat de poz curenta"<<endl;
@@ -648,7 +708,7 @@ void generare_intrare()
 
 int main()
 {
-    //generare_intrare();
+    //generare_intrare();   ///pentru crearea propriilor date, un exemplu deja facut este in modelul de intrare
     colet c[100];
     int nr_c=-1;
     while(!col.eof())
@@ -658,9 +718,6 @@ int main()
 
     int nr_v=-1;
     vehicul *v[100];
-
-
-
     while(!veh.eof())
     {
         string tip;
@@ -687,18 +744,10 @@ int main()
     }
 
     manager(c,nr_c,v,nr_v);
-
-
-
-
-
     for(int i=0;i<nr_v;i++)
         delete v[i];
     cout<<endl<<endl;
     delete[] v;
-
-
-
 
     return 0;
 }
